@@ -16,6 +16,14 @@ export const login = async (email: string, password: string) => {
   return res;
 };
 
+export const register = async (email: string, password: string) => {
+  const res = await apiFetch("/auth/register", {
+    method: "POST",
+    body: JSON.stringify({ email, password }),
+  });
+
+  return res;
+};
 
 
 export const logout = () =>

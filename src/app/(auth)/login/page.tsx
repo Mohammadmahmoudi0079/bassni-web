@@ -16,11 +16,11 @@ export default function LoginPage() {
       const user = await login(email, password);
       // Redirect based on role
       if (user.role === "owner") {
-        router.push("/owner/dashboard");
+        router.push("/owner");
       } else if (user.role === "admin") {
-        router.push("/admin/dashboard");
+        router.push("/admin");
       } else if (user.role === "super_admin") {
-        router.push("/super-admin/dashboard");
+        router.push("/super-admin");
       }else {
         router.push("/");
       }
