@@ -38,7 +38,7 @@ export default function OwnerItemsPage() {
 
   if (loading) return <p>Loading items...</p>;
   if (error) return <p className="text-red-600">{error}</p>;
-  if (items.length === 0) return <p>No items added yet.</p>;
+  if (items.length === 0) return <p>No items added yet.</p>; 
 
   return (
     <div className="p-6">
