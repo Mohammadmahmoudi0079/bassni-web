@@ -16,10 +16,10 @@ export const login = async (email: string, password: string) => {
   return res;
 };
 
-export const register = async (email: string, password: string) => {
+export const register = async (email: string, password: string, companyName: string, phoneNumber: { number: string; countryCode: string } | null) => {
   const res = await apiFetch("/auth/register", {
     method: "POST",
-    body: JSON.stringify({ email, password }),
+    body: JSON.stringify({ email, password, companyName, phoneNumber }),
   });
 
   return res;

@@ -1,105 +1,150 @@
-'use client';
+"use client";
 
-import { ShoppingBag, Menu, X } from 'lucide-react';
-import { useState } from 'react';
-import Link from 'next/link';
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import Image from "next/image";
+import { motion } from "framer-motion";
+import { useState, useEffect } from "react";
+import { useI18n } from "@/src/locales/client";
+import { LanguageSwitcher } from "./LanguageSwitcher";
 
-const navLinks = [
-  { label: 'Home', href: '/' },
-  { label: 'Services', href: '/services' },
-  { label: 'Pricing', href: '/pricing' },
-  { label: 'Features', href: '/features' },
-  { label: 'Privacy Policy', href: '/privacy-policy' },
-];
+const NavBar = () => {
+  const pathname = usePathname();
+  const [currentPage, setCurrentPage] = useState("");
 
-export default function Navbar() {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  useEffect(() => {
+    if (pathname) {
+      const pathWithoutLocale = pathname.split("/").slice(2).join("/");
+      setCurrentPage(`/${pathWithoutLocale}`);
+    }
+  }, [pathname]);
+
+  const t = useI18n();
+
+  const mainPages = ["/usecases", "/about", "/productsandlicenses", "/features", "/blog"];
+  const darkPages = mainPages; // same for dark mode
+  const isDarkPage = darkPages.includes(currentPage);
+
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  const navItems = [
+    // { name: t("NavBarComponent.names.ProductsAndLicenses"), path: "/productsandlicenses" },
+    // { name: t("NavBarComponent.names.UseCases"), path: "/usecases" },
+    { name: t("NavBarComponent.names.Services"), path: "/services" },
+    // { name: t("NavBarComponent.names.Features"), path: "/features" },
+    // { name: t("NavBarComponent.names.Blog"), path: "/blog" },
+    { name: t("NavBarComponent.names.AboutUs"), path: "/about" },
+    { name: t("NavBarComponent.names.Contact"), path: "/contact" },
+    { name: "Login", path: "/login" },
+  ];
 
   return (
-    <nav className="sticky top-0 z-50 bg-white/90 backdrop-blur-sm border-b border-gray-200">
-      <div className="container mx-auto px-6 py-4">
-        <div className="flex items-center justify-between">
-          {/* Logo */}
-          <Link href="/" className="flex items-center space-x-2">
-            <div className="w-10 h-10 bg-linear-to-r from-purple-600 to-blue-500 rounded-lg flex items-center justify-center">
-              <ShoppingBag className="w-6 h-6 text-white" />
-            </div>
-            <span className="text-2xl font-bold bg-linear-to-r from-purple-600 to-blue-500 bg-clip-text text-transparent">
-              Bassni
-            </span>
+    <>
+      {/* Desktop Navbar */}
+      <nav
+        className={`${
+          isDarkPage ? "bg-black text-white" : "bg-white text-black"
+        } sticky top-0 z-10 bg-opacity-30 backdrop-filter backdrop-blur-lg m-0`}
+      >
+        <div className="hidden justify-between items-center w-full h-16 py-4 md:flex md:px-12 lg:px-32 gap-4">
+          <Link href="/" className="h-16 w-32 relative">
+            <Image
+              src={isDarkPage ? "/images/bassni-logo-light.png" : "/images/bassni-logo-light.png"}
+              alt="homepagelogo"
+              fill
+              className="object-contain py-1"
+            />
           </Link>
-
-          {/* Desktop Nav */}
-          <div className="hidden md:flex items-center space-x-8">
-            {navLinks.map((link) => (
+          <div className="flex space-x-2 lg:space-x-6 justify-center">
+            {navItems.map((item) => (
               <Link
-                key={link.label}
-                href={link.href}
-                className="text-gray-700 hover:text-purple-600 font-medium transition-colors"
+                href={item.path}
+                key={item.path}
+                className={`relative group transition-all duration-200 text-center hover:scale-105 ${
+                  pathname === item.path ? "text-blue-600" : "hover:text-blue-400"
+                }`}
               >
-                {link.label}
+                <span>{item.name}</span>
+                <span className="absolute -bottom-1 left-1/2 w-0 h-px bg-blue-400 group-hover:w-1/2 group-hover:transition-all group-hover:duration-200"></span>
+                <span className="absolute -bottom-1 right-1/2 w-0 h-px bg-blue-400 group-hover:w-1/2 group-hover:transition-all group-hover:duration-200"></span>
               </Link>
             ))}
           </div>
-
-          {/* Auth */}
-          <div className="hidden md:flex items-center space-x-4">
-            <Link
-              href="/login"
-              className="px-6 py-2 text-gray-700 hover:text-purple-600 font-medium"
-            >
-              Login
-            </Link>
-            <Link
-              href="/register"
-              className="px-6 py-2 bg-linear-to-r from-purple-600 to-blue-500 text-white rounded-lg"
-            >
-              Sign Up Free
-            </Link>
+          <div>
+            <LanguageSwitcher />
           </div>
+        </div>
+      </nav>
 
-          {/* Mobile toggle */}
-          <button
-            className="md:hidden text-gray-700"
-            onClick={() => setIsMenuOpen((v) => !v)}
-          >
-            {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
+      {/* Mobile Navbar */}
+      <nav className="md:hidden flex flex-col w-full h-fit py-2 px-4 sm:px-8 sticky top-0 z-10 bg-white backdrop-filter backdrop-blur-lg bg-opacity-40">
+        <div className="flex justify-between w-full">
+          <Link href="/" className="relative w-32 h-16">
+            <Image
+              src="/images/logo-color-newky.png"
+              alt="homepagelogo"
+              fill
+              className="object-contain"
+            />
+          </Link>
+          <button onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
+            <svg
+              className="w-10 h-10 text-black"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <motion.path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                animate={{
+                  d: isMobileMenuOpen
+                    ? "M6 18L18 6M6 6l12 12" // X Icon
+                    : "M4 6h16M4 12h16M4 18h16", // Hamburger Icon
+                }}
+                transition={{
+                  duration: 0.3,
+                  ease: "easeInOut",
+                }}
+              />
+            </svg>
           </button>
         </div>
 
-        {/* Mobile Menu */}
-        {isMenuOpen && (
-          <div className="md:hidden mt-4 pb-4">
-            <div className="flex flex-col space-y-4">
-              {navLinks.map((link) => (
-                <Link
-                  key={link.label}
-                  href={link.href}
-                  className="text-gray-700 hover:text-purple-600 font-medium py-2"
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  {link.label}
-                </Link>
-              ))}
-
-              <div className="pt-4 border-t border-gray-200 space-y-3">
-                <Link
-                  href="/login"
-                  className="w-full py-2 text-gray-700 hover:text-purple-600 font-medium text-center"
-                >
-                  Login
-                </Link>
-                <Link
-                  href="/register"
-                  className="w-full py-2 bg-linear-to-r from-purple-600 to-blue-500 text-white rounded-lg text-center"
-                >
-                  Register
-                </Link>
-              </div>
-            </div>
+        {/* Mobile collapsible menu */}
+        <motion.div
+          className="md:hidden w-full flex justify-end"
+          initial={{ height: 0, opacity: 0 }}
+          animate={{
+            height: isMobileMenuOpen ? "auto" : 0,
+            opacity: isMobileMenuOpen ? 1 : 0,
+          }}
+          transition={{ duration: 0.2 }}
+        >
+          <div className="flex flex-col items-end space-y-1 p-4">
+            {navItems.map((item) => (
+              <Link
+                key={item.path}
+                href={item.path}
+                className={`relative group transition-all duration-200 hover:scale-110 ${
+                  pathname === item.path
+                    ? "text-blue-600"
+                    : "text-black hover:text-blue-400"
+                }`}
+              >
+                <span className="font-semibold">{item.name}</span>
+                <span className="absolute bottom-0 left-1/2 w-0 h-px bg-blue-400 group-hover:w-1/2 group-hover:transition-all"></span>
+                <span className="absolute bottom-0 right-1/2 w-0 h-px bg-blue-400 group-hover:w-1/2 group-hover:transition-all"></span>
+              </Link>
+            ))}
+            <LanguageSwitcher />
           </div>
-        )}
-      </div>
-    </nav>
+        </motion.div>
+      </nav>
+    </>
   );
-}
+};
+
+export default NavBar;
