@@ -52,12 +52,12 @@ export default function RegisterPage() {
 
   // Password validation
   const validatePassword = () => {
-    if (formData.password.length < 8) {
-      return "Password must be at least 8 characters long";
+    if (formData.password.length < 6) {
+      return "Password must be at least 6 characters long";
     }
-    if (!/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/.test(formData.password)) {
-      return "Password must contain at least one uppercase letter, one lowercase letter, and one number";
-    }
+    // if (!/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/.test(formData.password)) {
+    //   return "Password must contain at least one uppercase letter, one lowercase letter, and one number";
+    // }
     if (formData.password !== formData.confirmPassword) {
       return "Passwords do not match";
     }
@@ -119,17 +119,15 @@ export default function RegisterPage() {
     try {
       // Prepare registration data
       const registrationData = {
-  email: formData.email,
-  password: formData.password,
-  companyName: formData.companyName, // Now required
-  phoneNumber: {
-    number: formData.phoneNumber,
-    countryCode: formData.countryCode
-  },
+        email: formData.email,
+        password: formData.password,
+        companyName: formData.companyName, 
+        phoneNumber: formData.phoneNumber,
+        countryCode: formData.countryCode,
   // recaptchaToken, // Uncomment when implementing reCAPTCHA
 };
 
-      await register(registrationData.email, registrationData.password, registrationData.companyName, registrationData.phoneNumber);
+      await register(registrationData.email, registrationData.password, registrationData.companyName, registrationData.phoneNumber, registrationData.countryCode);
       
       setSuccess("Registration successful! Redirecting to login...");
       
@@ -205,35 +203,44 @@ export default function RegisterPage() {
               <p className="text-green-700 text-sm">{success}</p>
             </div>
           )}
-
+          {/* Email Field */}<input
+            id="email"
+            name="email"
+            type="email"
+            required
+            placeholder="Enter your email address"
+            value={formData.email}
+            onChange={handleChange}
+            className="appearance-none relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:z-10 text-sm transition-colors"
+          />
           {/* Company Name Field */}
-<input
-  id="companyName"
-  name="companyName"
-  type="text"
-  required
-  placeholder="Enter your company name"
-  value={formData.companyName}
-  onChange={handleChange}
-  className="appearance-none relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:z-10 text-sm transition-colors"
-/>
+          <input
+            id="companyName"
+            name="companyName"
+            type="text"
+            required
+            placeholder="Enter your company name"
+            value={formData.companyName}
+            onChange={handleChange}
+            className="appearance-none relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:z-10 text-sm transition-colors"
+          />
 
-{/* Phone Number Field */}
-<input
-  id="phoneNumber"
-  name="phoneNumber"
-  type="tel"
-  required
-  placeholder="Phone number"
-  value={formData.phoneNumber}
-  onChange={handleChange}
-  className="appearance-none relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:z-10 text-sm transition-colors"
-/>
+          {/* Phone Number Field */}
+          <input
+            id="phoneNumber"
+            name="phoneNumber"
+            type="tel"
+            required
+            placeholder="Phone number"
+            value={formData.phoneNumber}
+            onChange={handleChange}
+            className="appearance-none relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:z-10 text-sm transition-colors"
+          />
 
           {/* Phone Number Field with Country Code */}
           <div className="space-y-2">
             <label htmlFor="phoneNumber" className="block text-sm font-medium text-gray-700 mb-1">
-              Phone Number <span className="text-gray-500 text-xs">(Optional)</span>
+              Phone Number
             </label>
             <div className="flex gap-3">
               <div className="w-1/3">
@@ -276,7 +283,7 @@ export default function RegisterPage() {
               type="password"
               autoComplete="new-password"
               required
-              placeholder="At least 8 characters"
+              placeholder="At least 6 characters"
               value={formData.password}
               onChange={handleChange}
               className="appearance-none relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:z-10 text-sm transition-colors"

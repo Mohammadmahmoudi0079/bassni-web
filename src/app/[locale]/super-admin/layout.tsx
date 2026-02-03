@@ -8,8 +8,8 @@ import {
   Building2,
   BarChart3,
   FileText,
-  LogOut,
 } from 'lucide-react';
+import LogoutButton from '@/src/components/ui/Logout';
 
 const navItems = [
   {
@@ -49,9 +49,9 @@ export default function SuperAdminLayout({
   return (
     <div className="flex min-h-screen bg-gray-50">
       {/* Sidebar */}
-      <aside className="w-64 bg-white border-r border-gray-200 flex flex-col">
+      <aside className="flex w-64 flex-col border-r border-gray-200 bg-white">
         {/* Logo */}
-        <div className="px-6 py-5 border-b border-gray-200">
+        <div className="border-b border-gray-200 px-6 py-5">
           <Link
             href="/super-admin"
             className="text-xl font-bold text-purple-600"
@@ -61,7 +61,7 @@ export default function SuperAdminLayout({
         </div>
 
         {/* Navigation */}
-        <nav className="flex-1 px-3 py-4 space-y-1">
+        <nav className="flex-1 space-y-1 px-3 py-4">
           {navItems.map((item) => {
             const isActive =
               pathname === item.href ||
@@ -76,7 +76,7 @@ export default function SuperAdminLayout({
                 className={`flex items-center gap-3 rounded-lg px-4 py-2 text-sm font-medium transition-colors ${
                   isActive
                     ? 'bg-purple-600 text-white'
-                    : 'text-gray-700 hover:bg-gray-100'
+                    : 'text-gray-700 hover:bg-purple-50 hover:text-purple-600'
                 }`}
               >
                 <Icon className="h-5 w-5" />
@@ -84,25 +84,17 @@ export default function SuperAdminLayout({
               </Link>
             );
           })}
-        </nav>
 
-        {/* Footer */}
-        <div className="border-t border-gray-200 p-4">
-          <button
-            className="flex w-full items-center gap-3 rounded-lg px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100"
-            onClick={() => {
-              // hook into your auth logout
-              console.log('logout');
-            }}
-          >
-            <LogOut className="h-5 w-5" />
-            Logout
-          </button>
-        </div>
+          {/* Divider */}
+          <div className="my-4 border-t border-gray-200" />
+
+          {/* Logout */}
+          <LogoutButton />
+        </nav>
       </aside>
 
       {/* Main content */}
-      <main className="flex-1 p-6 overflow-y-auto">{children}</main>
+      <main className="flex-1 overflow-y-auto p-6">{children}</main>
     </div>
   );
 }

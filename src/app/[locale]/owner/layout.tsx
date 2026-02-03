@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { PackagePlus, Package, Info, LogOut } from 'lucide-react';
+import LogoutButton from '@/src/components/ui/Logout';
 
 const tabs = [
   {
@@ -34,13 +35,7 @@ export default function OwnerLayout({
       {/* Header */}
       <header className="bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between">
         <h1 className="text-xl font-bold text-purple-600">Owner Dashboard</h1>
-        <button
-          className="flex items-center gap-2 text-gray-700 hover:text-purple-600"
-          onClick={() => console.log('logout')}
-        >
-          <LogOut className="h-5 w-5" />
-          Logout
-        </button>
+        <LogoutButton />
       </header>
 
       {/* Tabs */}

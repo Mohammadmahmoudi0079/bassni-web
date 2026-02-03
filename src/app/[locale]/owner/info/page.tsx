@@ -11,7 +11,7 @@ export default function OwnerInformation() {
   const [countryCode, setCountryCode] = useState("+1|US");
   const [message, setMessage] = useState("");
 
-  const countryPhoneCodes = {
+  const countryPhoneCodes: Record<string, string> = {
     US: "+1",
     TR: "+90",
     IN: "+91",
@@ -20,9 +20,7 @@ export default function OwnerInformation() {
   useEffect(() => {
     async function fetchProfile() {
       try {
-        // apiFetch returns JSON directly
         const data = await apiFetch("/owner/information");
-
         if (data.profile) {
           setProfile(data.profile);
           setPhoneNumber(data.profile.phone_number || "");
@@ -39,7 +37,8 @@ export default function OwnerInformation() {
     fetchProfile();
   }, []);
 
-  const handleUpdate = async () => {
+  const handleSubmit = async () => {
+    setMessage("");
     try {
       const payload = profile
         ? { phone_number: phoneNumber }
@@ -60,7 +59,7 @@ export default function OwnerInformation() {
         setProfile({
           company_name: companyName,
           phone_number: phoneNumber,
-          country: countryCode,
+          country: countryCode.split("|")[1],
         });
       }
     } catch (err: any) {
@@ -69,75 +68,80 @@ export default function OwnerInformation() {
     }
   };
 
-  if (loading) return <div>Loading...</div>;
+  if (loading) return <div className="text-center">Loading...</div>;
 
   return (
-    <div className="max-w-xl mx-auto p-6 bg-white rounded shadow">
-      <h2 className="text-2xl mb-4 text-center">Owner Information</h2>
+    <div className="max-w-3xl mx-auto p-6 space-y-6">
+      <h2 className="text-2xl font-semibold text-center">Owner Information</h2>
 
       {message && (
-        <div className="bg-green-100 text-green-700 p-2 rounded mb-4">
+        <div className="bg-blue-100 text-blue-800 p-3 rounded">
           {message}
         </div>
       )}
 
-      {profile ? (
-        <div>
-          <p><strong>Company Name:</strong> {profile.company_name}</p>
-          <p><strong>Country:</strong> {profile.country}</p>
+      {/* Information Box */}
+      <div className="bg-white border rounded-lg shadow p-5">
+        <h3 className="text-lg font-medium mb-4">Current Profile</h3>
 
-          <input
-            type="text"
-            className="border p-2 rounded w-full mb-2"
-            value={phoneNumber}
-            onChange={(e) => setPhoneNumber(e.target.value)}
-          />
+        {profile ? (
+          <div className="space-y-2 text-sm">
+            <p><strong>Company Name:</strong> {profile.company_name}</p>
+            <p><strong>Country:</strong> {profile.country}</p>
+            <p><strong>Phone Number:</strong> {profile.phone_number}</p>
+          </div>
+        ) : (
+          <p className="text-gray-500">No information yet.</p>
+        )}
+      </div>
 
-          <button
-            className="bg-blue-600 text-white px-4 py-2 rounded w-full"
-            onClick={handleUpdate}
-          >
-            Update Phone Number
-          </button>
-        </div>
-      ) : (
-        <div>
-          <input
-            type="text"
-            className="border p-2 rounded w-full mb-2"
-            placeholder="Company Name"
-            value={companyName}
-            onChange={(e) => setCompanyName(e.target.value)}
-          />
+      {/* Form Box */}
+      <div className="bg-white border rounded-lg shadow p-5">
+        <h3 className="text-lg font-medium mb-4">
+          {profile ? "Update Phone Number" : "Create Profile"}
+        </h3>
 
-          <select
-            className="border p-2 rounded w-full mb-2"
-            value={countryCode}
-            onChange={(e) => setCountryCode(e.target.value)}
-          >
-            {Object.entries(countryPhoneCodes).map(([code, phone]) => (
-              <option key={code} value={`${phone}|${code}`}>
-                {phone} {code}
-              </option>
-            ))}
-          </select>
+        {!profile && (
+          <>
+            <input
+              type="text"
+              className="border p-2 rounded w-full mb-3"
+              placeholder="Company Name"
+              value={companyName}
+              onChange={(e) => setCompanyName(e.target.value)}
+            />
 
-          <input
-            type="text"
-            className="border p-2 rounded w-full mb-2"
-            placeholder="Phone Number"
-            value={phoneNumber}
-            onChange={(e) => setPhoneNumber(e.target.value)}
-          />
+            <select
+              className="border p-2 rounded w-full mb-3"
+              value={countryCode}
+              onChange={(e) => setCountryCode(e.target.value)}
+            >
+              {Object.entries(countryPhoneCodes).map(([code, phone]) => (
+                <option key={code} value={`${phone}|${code}`}>
+                  {phone} {code}
+                </option>
+              ))}
+            </select>
+          </>
+        )}
 
-          <button
-            className="bg-green-600 text-white px-4 py-2 rounded w-full"
-            onClick={handleUpdate}
-          >
-            Create Profile
-          </button>
-        </div>
-      )}
+        <input
+          type="text"
+          className="border p-2 rounded w-full mb-4"
+          placeholder="Phone Number"
+          value={phoneNumber}
+          onChange={(e) => setPhoneNumber(e.target.value)}
+        />
+
+        <button
+          className={`w-full py-2 rounded text-white ${
+            profile ? "bg-blue-600" : "bg-green-600"
+          }`}
+          onClick={handleSubmit}
+        >
+          {profile ? "Update" : "Submit"}
+        </button>
+      </div>
     </div>
   );
 }
