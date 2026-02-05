@@ -46,14 +46,16 @@ const NavBar = () => {
           isDarkPage ? "bg-black text-white" : "bg-white text-black"
         } sticky top-0 z-10 bg-opacity-30 backdrop-filter backdrop-blur-lg m-0`}
       >
-        <div className="hidden justify-between items-center w-full h-16 py-4 md:flex md:px-12 lg:px-32 gap-4">
+        <div className="hidden justify-between items-center w-full h-16 py-4 md:flex md:px-12 lg:px-12 gap-4">
           <Link href="/" className="h-16 w-32 relative">
-            <Image
-              src={isDarkPage ? "/images/bassni-logo-light.png" : "/images/bassni-logo-light.png"}
-              alt="homepagelogo"
-              fill
-              className="object-contain py-1"
-            />
+          <div className="relative w-14 h-14 rounded-full overflow-hidden py-1">
+              <Image
+                src={isDarkPage ? "/images/bassni-logo-dark.png" : "/images/bassni-logo-dark.png"}
+                alt="homepagelogo"
+                fill
+                className="object-contain"
+              />
+            </div>
           </Link>
           <div className="flex space-x-2 lg:space-x-6 justify-center">
             {navItems.map((item) => (
@@ -81,7 +83,7 @@ const NavBar = () => {
         <div className="flex justify-between w-full">
           <Link href="/" className="relative w-32 h-16">
             <Image
-              src="/images/logo-color-newky.png"
+              src="/images/bassni-logo-dark.png"
               alt="homepagelogo"
               fill
               className="object-contain"
